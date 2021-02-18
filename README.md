@@ -1,5 +1,5 @@
 <h1>pYTTools</h1>
-pYTTools (IT Tools) is a swiss army knife of useful feastures for someone in IT. 
+pYTTools (IT Tools) is a swiss army knife of useful features for someone in IT. 
 
 Contains fearures to get basic info on Active Directory Users and Computers.
 
