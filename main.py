@@ -78,6 +78,7 @@ def main():
             print("Exiting")
         else:
             print("Your selection is not listed.")
+            main()
     else:
         print("Your selection is not listed.")
         main()
