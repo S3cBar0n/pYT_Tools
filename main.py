@@ -1,14 +1,26 @@
 # import os
-import subprocess  # Using for Device Summary feature
-import platform  # Using for Device Summary feature
 # import pandas
 # import win32api  # This has to be installed but not referenced in the program
-import pyad.adquery
-import pyad.aduser
-import pyad.pyadutils
-import utils
 
-domain_name = "DOMAINNAME"
+try:
+    print("Initializing session...")
+    domainName = input("Please enter the name of your domain without TLD (EX: TestDomain): ")
+    topLevelDomain = input("Please enter the TLD (Top Level Domain) of your Domain (EX: local, com, or internal): ")
+    confirmEntry = input(f"You have entered: {domainName} with the TLD of {topLevelDomain}... Is {domainName}.{topLevelDomain} your full domain? YES or NO: ")
+
+    if confirmEntry != "YES":
+        print("Please restart pYTTools and enter in the correct domain...")
+        exit()
+    else:
+        import pyad.adquery
+        import pyad.aduser
+        import pyad.pyadutils
+        import utils
+        pass
+except Exception as e:
+    print(e)
+    print("Failed to gather your domain information, please try again")
+    exit()
 
 
 def main():
@@ -53,8 +65,7 @@ def main():
             main()
         elif selection == 4:
             print("Welcome to the Ping Module")
-            print("pong")
-            # ping
+            ping()
 
             main()
         elif selection == 5:
@@ -72,7 +83,6 @@ def main():
         main()
 
 
-# Active Directory User Summary Module - returns information on a specified user
 def ad_sum():
     try:
         username = input("Enter in a username: ")
@@ -91,21 +101,21 @@ def ad_sum():
 
     # Selects our parameters for the search and aims the search to a specific user
     q.execute_query(
-        attributes=["SamAccountName", "Useraccountcontrol", "distinguishedName"],
+        attributes=["SamAccountName", "Useraccountcontrol", "displayName", "distinguishedName", "description",
+                    "department", "mail", "telephoneNumber", "facsimileTelephoneNumber", "manager", "lockoutTime",
+                    "pwdLastSet", "memberOf"],
         where_clause="SamAccountName = '{}'".format(username),
-        base_dn=f"DC={domain_name}, DC=local"
+        base_dn=f"DC={domainName}, DC={topLevelDomain}"
     )
 
     # This is checking to see if the search returned any content, if it doesn't the user doesn't exist
     if q.get_row_count() <= 0:
-        print(f"User {username} does not exist on {domain_name}.local")
+        print(f"User {username} does not exist on {domainName}.{topLevelDomain}")
         fail_opt = input("YES to search again, type anything else to return to menu: ")
         if fail_opt == "YES":
             ad_sum()
         else:
             main()
-    else:
-        pass
 
     # This is creating the print out for our summary and checks to see if the user is locked out
     for row in q.get_results():
@@ -130,6 +140,7 @@ def ad_sum():
                 print("*************************************************")
                 print(f'{row["displayName"]} ({row["SamAccountName"]})')
                 print(description.replace(",", ""))
+                print(row["department"])
                 print(row["mail"])
                 print(f'Phone: {row["telephoneNumber"]}')
                 print(f'Fax: {row["facsimileTelephoneNumber"]}')
@@ -144,7 +155,7 @@ def ad_sum():
                 print(e)
                 continue
         else:
-            print(f"User {username} does not exist on {domain_name}.local")
+            print(f"User {username} does not exist on {domainName}.{topLevelDomain}")
             fail_opt = input("YES to search again, type anything else to return to menu: ")
             if fail_opt == "YES":
                 ad_sum()
@@ -166,14 +177,13 @@ def ad_sum():
         if re_run == "YES":
             ad_sum()
         else:
-            pass
+            main()
     elif add_opt == "YES":
         ad_sum()
     else:
         pass
 
 
-# Active Directory Computer Summary - Returns information on a specicified device.
 def dev_sum():
     device = input("Enter Device ID: ")
     device = device + "$"
@@ -184,19 +194,17 @@ def dev_sum():
     q.execute_query(
         attributes=["SamAccountName", "Useraccountcontrol", "cn", "distinguishedName"],
         where_clause="SamAccountName = '{}'".format(device),
-        base_dn=f"DC={domain_name}, DC=local"
+        base_dn=f"DC={domainName}, DC={topLevelDomain}"
     )
 
     # This is checking to see if the search returned any content, if it doesn't the user doesn't exist
     if q.get_row_count() <= 0:
-        print(f"Device {device} does not exist on {domain_name}.local")
+        print(f"Device {device} does not exist on {domainName}.{topLevelDomain}")
         fail_opt = input("YES to search again, type anything else to return to menu: ")
         if fail_opt == "YES":
             dev_sum()
         else:
             main()
-    else:
-        pass
 
     # This is creating the print out for our summary and checks to see if the user is locked out
     for row in q.get_results():
@@ -208,7 +216,7 @@ def dev_sum():
 
             try:
                 print("*************************************************")
-                print(f'{row["cn"]} \n')
+                print(f'Device Name: {row["cn"]}')
 
                 dev_location = str(row['distinguishedName']).replace(",OU=", ",DC=")
                 dev_location = dev_location.split(',DC=')
@@ -217,14 +225,14 @@ def dev_sum():
                     print(item)
                 # print(f'Device Location: {row["distinguishedName"]}')
 
-                utils.lookup(row["cn"])
+                utils.lookup_util(row["cn"])
 
                 print("*************************************************")
             except Exception as e:
                 print(e)
                 continue
         else:
-            print(f"User {device} does not exist on {domain_name}.local")
+            print(f"User {device} does not exist on {domainName}.{topLevelDomain}")
             fail_opt = input("YES to search again, type anything else to return to menu: ")
             if fail_opt == "YES":
                 dev_sum()
@@ -235,11 +243,7 @@ def dev_sum():
     if add_opt == "MORE":
 
         print("*************************************************")
-        print(f'Groups that {device} is a part of:')
-        groups = sorted(row["memberOf"], key=str.lower)
-        for group in groups:
-            group = group.split(",", 1)[0]
-            print(group.replace('CN=', ''))
+        print("More stuff here")
         print("*************************************************")
 
         re_run = input("To search for another user enter YES, otherwise enter anything: ")
@@ -251,6 +255,18 @@ def dev_sum():
         dev_sum()
     else:
         pass
+
+
+def ping():
+    target = input("Enter IP/Domain/Device to ping: ")
+    utils.ping_util(target)
+    utils.lookup_util(target)
+
+    ping_continue = input("Would you like to ping again? YES to continue, type anything else to return to menu: ")
+    if ping_continue == "YES":
+        ping()
+    else:
+        main()
 
 
 main()
