@@ -3,7 +3,7 @@ pYTTools (IT Tools) is a small project I put together to help me with a home lab
 
 pYTTools is meant to be a swiss army knife of different tools and services that anyone can use to help make things a bit easier. ]
 
-<h3>Existing Features</h3>
+<h3>Existing Features:</h3>
 - Contains a module to gather information on a specific user.<br>
 - Contains a module to gather information on a specific computer.<br>
 - Ping Module to search for an active device and gather its current IP(s) from DNS.<br>
