@@ -10,7 +10,7 @@ pYTTools is meant to be a swiss army knife of different tools and services that 
 
 
 <h3>Future features:</h3>
-- Check for Common Misconfiguration issues for AD users and Computers
-- Port Checker
-- Automation tasks (creating/transfering files)
-- Easy information gathering from AD (gathering lists of users based on a specific item like a common group, location, or attribute.)
+- Check for Common Misconfiguration issues for AD users and Computers<br>
+- Port Checker<br>
+- Automation tasks (creating/transfering files)<br>
+- Easy information gathering from AD (gathering lists of users based on a specific item like a common group, location, or attribute.)<br>
