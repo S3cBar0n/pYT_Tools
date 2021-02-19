@@ -1,9 +1,16 @@
 <h1>pYTTools</h1>
-pYTTools (IT Tools) is a swiss army knife of useful features for someone in IT. 
+pYTTools (IT Tools) is a small project I put together to help me with a home lab project, this was also created to help assist me with basic IT tasks that can be easily automated. 
 
-Contains fearures to get basic info on Active Directory Users and Computers.
+pYTTools is meant to be a swiss army knife of different tools and services that anyone can use to help make things a bit easier. ]
 
+<h3>Existing Features</h3>
+- Contains a module to gather information on a specific user
+- Contains a module to gather information on a specific computer
+- Ping Module to search for an active device and gather its current IP(s) from DNS.
 
 
 <h3>Future features:</h3>
-Check for Common Misconfiguration issues, and includes a ping tool and port checker.
+- Check for Common Misconfiguration issues for AD users and Computers
+- Port Checker
+- Automation tasks (creating/transfering files)
+- Easy information gathering from AD (gathering lists of users based on a specific item like a common group, location, or attribute.)
